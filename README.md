@@ -164,14 +164,16 @@ User accounts, dashboards, and persistent audit history are **not required for t
 - AI findings are recommendations, **not a certification of WCAG or GIGW compliance**.
 - Public-site scanning should respect site policies, applicable access restrictions, and reasonable request rates.
 
+
 ## Team Mystic Minds
 
-| Member |
-|---|
-| Bhavya Bhat |
-| Simraa Wasim Parkar |
-| Saloni Jamdade |
-| Lucky Jangid |
+| Team Member | Contributions |
+|---|---|
+| **Bhavya Bhat** | UI/UX Design, Frontend Development, Research |
+| **Simraa Wasim Parkar** | Frontend Development, UI/UX Design, Webpage & Image Extraction |
+| **Lucky Jangid** | Gemma 4 Integration, Backend Development |
+| **Saloni Jamdade** | Backend Development, Module Integration |
+
 
 ## References
 
