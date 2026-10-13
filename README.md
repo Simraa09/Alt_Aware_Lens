@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="logo.png" alt="AltAware Lens logo" width="250" />
+  <img src="AltAware_Logo.png" alt="AltAware Lens logo" width="250" />
 
 # AltAware Lens
 ### Context-Aware AI Alt-Text Accessibility Auditor
