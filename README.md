@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/logo.png" alt="AltAware Lens logo" width="250" />
+  <img src="logo.png" alt="AltAware Lens logo" width="250" />
 
 # AltAware Lens
 ### Context-Aware AI Alt-Text Accessibility Auditor
@@ -38,7 +38,7 @@ The goal is to provide actionable findings, not just a pass/fail label or a scor
 
 The following is our team's proposed system architecture, including optional and future components.
 
-![AltAware Lens system architecture](assets/architecture.jpeg)
+![AltAware Lens system architecture](architecture.jpeg)
 
 The architecture covers input, preprocessing and context extraction, analysis, reference guidance, evaluation criteria, output generation, the web interface, optional storage, and deployment. **Optional storage, user feedback, and infrastructure alternatives shown in the diagram are not claims that all those features have been implemented.**
 
