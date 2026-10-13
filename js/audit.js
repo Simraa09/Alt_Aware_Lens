@@ -414,24 +414,38 @@ async function loadLogo() {
     }
 
     
+    
     // ------------------------------------------
     // REPORT HEADER WITH LOGO
     // ------------------------------------------
 
+    // Navy header background
     pdf.setFillColor(...navy);
     pdf.rect(0, 0, W, 48, "F");
 
-    // Add logo
+    // White rounded rectangle behind logo
+    pdf.setFillColor(255, 255, 255);
+    pdf.roundedRect(
+      margin,  // X position
+      8,       // Y position
+      34,      // Width
+      32,      // Height
+      3,       // Horizontal corner radius
+      3,       // Vertical corner radius
+      "F"
+    );
+
+    // Add logo inside white rectangle
     try {
       const logoData = await loadLogo();
 
       pdf.addImage(
         logoData,
         "PNG",
-        margin,
-        9,
-        30,
-        30
+        margin + 4, // Small left padding
+        10,         // Top padding
+        26,         // Logo width
+        28          // Logo height
       );
 
     } catch (error) {
@@ -443,13 +457,13 @@ async function loadLogo() {
     pdf.setFontSize(18);
     pdf.setTextColor(255, 255, 255);
 
-    pdf.text("AltAware Lens", margin + 35, 18);
+    pdf.text("AltAware Lens", margin + 40, 18);
 
     // Report title
     pdf.setFontSize(13);
     pdf.text(
       "Image Accessibility Audit Report",
-      margin + 35,
+      margin + 40,
       29
     );
 
@@ -460,7 +474,7 @@ async function loadLogo() {
 
     pdf.text(
       "Alternative text assessment and review summary",
-      margin + 35,
+      margin + 40,
       37
     );
 
