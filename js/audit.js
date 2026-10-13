@@ -268,7 +268,7 @@
   // EXPORT PROFESSIONAL PDF AUDIT REPORT
   // ==========================================
 
-  byId("exportButton").addEventListener("click", () => {
+  byId("exportButton").addEventListener("click", async () => {
 
     if (!window.jspdf) {
       toast("PDF library could not load. Please try again.");
@@ -277,6 +277,24 @@
 
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF("p", "mm", "a4");
+    
+async function loadLogo() {
+  const image = new Image();
+
+  image.src = "./images/AltAware%20Lens%20Logo%20Mark.png";
+
+  await image.decode();
+
+  const canvas = document.createElement("canvas");
+  canvas.width = image.naturalWidth;
+  canvas.height = image.naturalHeight;
+
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(image, 0, 0);
+
+  return canvas.toDataURL("image/png");
+}
+
 
     const W = pdf.internal.pageSize.getWidth();
     const H = pdf.internal.pageSize.getHeight();
@@ -395,37 +413,59 @@
       });
     }
 
+    
     // ------------------------------------------
-    // REPORT HEADER
+    // REPORT HEADER WITH LOGO
     // ------------------------------------------
 
     pdf.setFillColor(...navy);
     pdf.rect(0, 0, W, 48, "F");
 
+    // Add logo
+    try {
+      const logoData = await loadLogo();
+
+      pdf.addImage(
+        logoData,
+        "PNG",
+        margin,
+        9,
+        30,
+        30
+      );
+
+    } catch (error) {
+      console.error("Logo could not be loaded:", error);
+    }
+
+    // Brand name
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(18);
     pdf.setTextColor(255, 255, 255);
 
-    pdf.text("AltAware Lens", margin, 18);
+    pdf.text("AltAware Lens", margin + 35, 18);
 
+    // Report title
     pdf.setFontSize(13);
     pdf.text(
       "Image Accessibility Audit Report",
-      margin,
+      margin + 35,
       29
     );
 
+    // Subtitle
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(9);
     pdf.setTextColor(215, 230, 245);
 
     pdf.text(
       "Alternative text assessment and review summary",
-      margin,
+      margin + 35,
       37
     );
 
     y = 60;
+
 
     // ------------------------------------------
     // REPORT DETAILS
