@@ -1,0 +1,1 @@
+.\venv\Scripts\Activate.ps1# Alt_Aware_Lens

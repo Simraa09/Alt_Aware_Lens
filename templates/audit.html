@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#16385f">
+
+  <title>Audit report | AltAware Lens</title>
+
+  <link rel="icon" href="{% static 'images/AltAware Lens Logo Mark.png' %}" type="image/png">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <script src="{% static 'js/audit.js' %}" defer></script>
+    
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
+
+<body>
+
+
+<!-- HEADER -->
+<header class="site-header">
+
+  <a href="/" class="brand">
+    <img
+      src="{% static 'images/AltAware Lens Logo Mark.png' %}"
+      alt="AltAware Lens logo"
+      class="brand-logo"
+      width="56"
+      height="56"
+    >
+  </a>
+
+  <nav class="nav-links" aria-label="Main navigation">
+    <a href="/about/">About</a>
+    <a href="/about/#how-it-works">How It Works</a>
+    <a href="/#audit-form" class="nav-cta">
+      Audit a Page
+    </a>
+  </nav>
+
+</header>
+
+
+  <!-- MAIN CONTENT -->
+  <main class="audit-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <span>Audit report</span>
+    </div>
+
+
+    <!-- Report Heading -->
+    <section class="report-heading">
+
+      <div>
+        <p class="eyebrow">Webpage assessment</p>
+        <h1>Alt text audit report</h1>
+        <p class="lead report-lead">
+          Review image descriptions, inspect the evidence and decide what should change.
+        </p>
+      </div>
+
+      <div class="report-domain">
+        <span class="domain-label">PAGE UNDER REVIEW</span>
+        <strong id="pageDomain">Illustrative sample page</strong>
+        <span id="scanMode">Preparing audit…</span>
+      </div>
+
+    </section>
+
+
+    <!-- Demo Banner -->
+    <div class="demo-banner" id="demoBanner" role="status">
+      <strong>Illustrative report</strong>
+      <span>
+        Results are AI-assisted and require human verification.
+        They were not retrieved from the URL you entered.
+      </span>
+    </div>
+
+
+    <!-- Audit Summary -->
+    <section class="metrics" aria-label="Audit summary">
+
+      <article class="metric-card">
+        <span class="metric-label">Images reviewed</span>
+        <strong id="metricImages">03</strong>
+        <span class="metric-note">In this report</span>
+      </article>
+
+      <article class="metric-card">
+        <span class="metric-label">Potential issues</span>
+        <strong id="metricIssues">02</strong>
+        <span class="metric-note">Check against page context</span>
+      </article>
+
+      <article class="metric-card">
+        <span class="metric-label">Awaiting decision</span>
+        <strong id="metricReview">03</strong>
+        <span class="metric-note">Human review recommended</span>
+      </article>
+
+    </section>
+
+
+    <!-- Report Layout -->
+    <section class="report-layout">
+
+      <!-- Findings Filters -->
+      <aside class="filter-panel" aria-label="Filter audit findings">
+
+        <h2>Findings</h2>
+
+        <p class="muted small-copy">
+          Filter the report by review status.
+        </p>
+
+        <div class="filter-list" role="group" aria-label="Finding filters">
+
+          <button class="filter-button is-active" data-filter="all" type="button">
+            <span>All findings</span>
+            <span id="countAll">3</span>
+          </button>
+
+          <button class="filter-button" data-filter="issue" type="button">
+            <span>Potential issues</span>
+            <span id="countIssues">2</span>
+          </button>
+
+          <button class="filter-button" data-filter="review" type="button">
+            <span>Needs review</span>
+            <span id="countReview">3</span>
+          </button>
+
+          <button class="filter-button" data-filter="decided" type="button">
+            <span>Reviewed by me</span>
+            <span id="countDecided">0</span>
+          </button>
+
+        </div>
+
+        <div class="review-note">
+          <strong>Before you edit</strong>
+          <p>
+            Confirm the image's purpose, surrounding text and any link
+            or button function. A short or empty alt attribute is not
+            automatically incorrect.
+          </p>
+        </div>
+
+      </aside>
+
+
+      <!-- Review Findings -->
+      <section class="findings-section" aria-labelledby="findings-title">
+
+        <div class="findings-toolbar">
+
+          <div>
+            <h2 id="findings-title">Review findings</h2>
+            <p id="resultsSubtitle" class="muted small-copy">
+              3 illustrative image examples
+            </p>
+          </div>
+
+          <button
+            id="exportButton"
+            class="button button-secondary button-small"
+            type="button">
+            Export summary
+          </button>
+
+        </div>
+
+        <div
+          id="findingList"
+          class="finding-list"
+          aria-live="polite">
+        </div>
+
+      </section>
+
+    </section>
+
+
+    <!-- Audit Disclaimer -->
+    <p class="disclaimer">
+      AltAware Lens provides decision support, not a compliance certification.
+      Findings and suggested text may be inaccurate; verify them against
+      the actual image and page context. No website content is changed
+      by this demo.
+    </p>
+
+  </main>
+
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+
+    <p class="footer-disclaimer">
+      AltSight provides AI-assisted suggestions for improving image
+      alternative text. Results may be inaccurate and require human
+      review. AltSight does not certify accessibility or legal compliance.
+    </p>
+
+    <nav class="footer-links" aria-label="Legal and information">
+      <a href="/legal/#disclaimer">Disclaimer</a>
+      <a href="/legal/#terms">Terms &amp; Conditions</a>
+      <a href="/legal/#privacy">Privacy Policy</a>
+    </nav>
+
+    <p class="copyright">
+      &copy; 2026 AltSight. All rights reserved.
+    </p>
+
+  </footer>
+
+</body>
+</html>

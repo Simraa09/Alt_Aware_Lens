@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#16385f">
+
+  <title>AltSight | Image accessibility review</title>
+
+  <link rel="icon" href="{% static 'images/AltAware Lens Logo Mark.png' %}" type="image/png">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <script src="{% static 'js/home.js' %}" defer></script>
+</head>
+
+<body class="home-page">
+
+  <!-- HEADER -->
+<header class="site-header">
+
+  <a href="/" class="brand">
+    <img
+      src="{% static 'images/AltAware Lens Logo Mark.png' %}"
+      alt="AltAware Lens logo"
+      class="brand-logo"
+      width="56"
+      height="56"
+    >
+  </a>
+
+  <nav class="nav-links" aria-label="Main navigation">
+    <a href="/about/">About</a>
+    <a href="/about/#how-it-works">How It Works</a>
+    <a href="/#audit-form" class="nav-cta">
+      Audit a Page
+    </a>
+  </nav>
+
+</header>
+
+
+  <!-- MAIN CONTENT -->
+  <main class="home-main">
+
+    <!-- Welcome Section -->
+    <section class="welcome-copy" aria-labelledby="page-title">
+
+      <p class="eyebrow">A clearer view of image accessibility</p>
+
+      <h1 id="page-title">
+        Make image descriptions<br class="desktop-break"> work for everyone.
+      </h1>
+
+      <p class="lead">
+        Review existing alt text for clarity, context and missing information.
+        AltAware Lens helps teams identify areas that may need a closer look.
+      </p>
+
+      <ul class="trust-points">
+        <li><span aria-hidden="true">✓</span> Context-aware review suggestions</li>
+        <li><span aria-hidden="true">✓</span> Evidence and explanations for each finding</li>
+        <li><span aria-hidden="true">✓</span> Human review before any change</li>
+      </ul>
+
+    </section>
+
+
+    <!-- URL Review Section -->
+    <section class="url-card" aria-labelledby="url-heading">
+
+      <div class="card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path
+            d="M10 13.5a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.7 1.7M14 10.5a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 19.2l1.7-1.7"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+
+      <h2 id="url-heading">Start a webpage review</h2>
+
+      <p class="muted">
+        Enter a public webpage URL to begin. The audit opens a
+        sample audit; connect the Django API to analyse live pages.
+      </p>
+
+      <form id="urlForm" class="url-form">
+
+        <label for="pageUrl">Webpage URL</label>
+
+        <div class="input-row">
+          <input
+            id="pageUrl"
+            name="url"
+            type="url"
+            placeholder="https://example.gov.in/page"
+            autocomplete="url"
+            required
+          >
+
+          <button class="button button-primary" type="submit">
+            Review page <span aria-hidden="true">→</span>
+          </button>
+        </div>
+
+        <p class="field-hint">
+          Use a complete URL beginning with https:// or http://
+        </p>
+
+        <div
+          id="homeMessage"
+          class="message"
+          role="status"
+          aria-live="polite">
+        </div>
+
+      </form>
+
+      <div class="card-divider"></div>
+
+      <div class="sample-row">
+        <div>
+          <strong>Just exploring?</strong>
+          <span>Open an illustrative report without scanning a live site.</span>
+        </div>
+
+        <button
+          type="button"
+          id="sampleButton"
+          class="button button-secondary">
+          View sample audit
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+
+    <p class="footer-disclaimer">
+      AltSight provides AI-assisted suggestions for improving image
+      alternative text. Results may be inaccurate and require human
+      review. AltSight does not certify accessibility or legal compliance.
+    </p>
+
+    <nav class="footer-links" aria-label="Legal and information">
+      <a href="/about/">About Us</a>
+      <a href="/legal/#disclaimer">Disclaimer</a>
+      <a href="/legal/#terms">Terms &amp; Conditions</a>
+      <a href="/legal/#privacy">Privacy Policy</a>
+    </nav>
+
+    <p class="copyright">
+      &copy; 2026 AltSight. All rights reserved.
+    </p>
+
+  </footer>
+
+</body>
+</html>
