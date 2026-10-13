@@ -263,7 +263,11 @@
     render();
   });
 
-  // Export complete audit report as PDF
+  
+  // ==========================================
+  // EXPORT PROFESSIONAL PDF AUDIT REPORT
+  // ==========================================
+
   byId("exportButton").addEventListener("click", () => {
 
     if (!window.jspdf) {
@@ -272,181 +276,508 @@
     }
 
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF();
+    const pdf = new jsPDF("p", "mm", "a4");
 
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+    const W = pdf.internal.pageSize.getWidth();
+    const H = pdf.internal.pageSize.getHeight();
 
-    const margin = 20;
-    const contentWidth = pageWidth - margin * 2;
-    const bottomLimit = pageHeight - 20;
+    const margin = 18;
+    const contentWidth = W - margin * 2;
+    const bottomLimit = H - 24;
 
-    let y = 20;
+    const navy = [22, 56, 95];
+    const blue = [47, 116, 208];
+    const text = [45, 55, 72];
+    const muted = [100, 116, 139];
+    const light = [242, 246, 251];
+    const border = [222, 230, 239];
 
-    // Check remaining space before adding content
-    function checkPage(height = 15) {
-      if (y + height > bottomLimit) {
-        pdf.addPage();
-        y = 20;
+    let y = 18;
+
+    // ------------------------------------------
+    // BASIC DRAWING HELPERS
+    // ------------------------------------------
+
+    function setColor(color) {
+      pdf.setTextColor(...color);
+    }
+
+    function newPage() {
+      pdf.addPage();
+      y = 20;
+    }
+
+    function checkSpace(required = 15) {
+      if (y + required > bottomLimit) {
+        newPage();
       }
     }
 
-    // Add a section heading
-    function addHeading(text) {
-      checkPage(20);
+    function wrappedLines(value, width, size = 10) {
+      pdf.setFontSize(size);
 
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(15);
-      pdf.setTextColor(22, 56, 95);
-
-      pdf.text(text, margin, y);
-      y += 11;
+      return pdf.splitTextToSize(
+        String(value ?? ""),
+        width
+      );
     }
 
-    // Add wrapped text, with automatic page breaks
-    function addText(label, value, fontSize = 10) {
-      const text = value === undefined
-        ? String(label)
-        : `${label}: ${value}`;
+    function writeText(value, options = {}) {
+      const {
+        size = 10,
+        color = text,
+        bold = false,
+        width = contentWidth,
+        lineHeight = 5.2,
+        gap = 4,
+        x = margin
+      } = options;
 
-      pdf.setFont("helvetica", "normal");
-      pdf.setFontSize(fontSize);
-      pdf.setTextColor(40, 40, 40);
+      pdf.setFont(
+        "helvetica",
+        bold ? "bold" : "normal"
+      );
 
-      const lines = pdf.splitTextToSize(text, contentWidth);
-      const lineHeight = fontSize * 0.48;
+      pdf.setFontSize(size);
+      setColor(color);
+
+      const lines = wrappedLines(value, width, size);
 
       for (const line of lines) {
-        checkPage(lineHeight + 2);
-        pdf.text(line, margin, y);
+        checkSpace(lineHeight + 2);
+        pdf.text(line, x, y);
         y += lineHeight;
       }
 
-      y += 5;
+      y += gap;
     }
 
-    // Main report title
+    function sectionHeading(title) {
+      checkSpace(20);
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(14);
+      setColor(navy);
+
+      pdf.text(title, margin, y);
+      y += 9;
+    }
+
+    function divider() {
+      checkSpace(5);
+
+      pdf.setDrawColor(...border);
+      pdf.setLineWidth(0.3);
+
+      pdf.line(
+        margin,
+        y,
+        W - margin,
+        y
+      );
+
+      y += 9;
+    }
+
+    function labelValue(label, value) {
+      checkSpace(12);
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(8);
+      setColor(muted);
+
+      pdf.text(label.toUpperCase(), margin, y);
+      y += 5;
+
+      writeText(value, {
+        size: 10,
+        gap: 5
+      });
+    }
+
+    // ------------------------------------------
+    // REPORT HEADER
+    // ------------------------------------------
+
+    pdf.setFillColor(...navy);
+    pdf.rect(0, 0, W, 48, "F");
+
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(21);
-    pdf.setTextColor(22, 56, 95);
+    pdf.setFontSize(18);
+    pdf.setTextColor(255, 255, 255);
 
-    pdf.text("AltAware Lens", margin, y);
-    y += 11;
+    pdf.text("AltAware Lens", margin, 18);
 
-    pdf.setFontSize(14);
-    pdf.text("Image Accessibility Audit Report", margin, y);
-    y += 12;
+    pdf.setFontSize(13);
+    pdf.text(
+      "Image Accessibility Audit Report",
+      margin,
+      29
+    );
 
-    pdf.setDrawColor(200, 210, 220);
-    pdf.line(margin, y, pageWidth - margin, y);
-    y += 12;
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(9);
+    pdf.setTextColor(215, 230, 245);
 
-    // Report information
-    addText("Report Date", new Date().toLocaleDateString());
-    addText("Page URL", requestedUrl);
-    addText(
-      "Scan Mode",
+    pdf.text(
+      "Alternative text assessment and review summary",
+      margin,
+      37
+    );
+
+    y = 60;
+
+    // ------------------------------------------
+    // REPORT DETAILS
+    // ------------------------------------------
+
+    sectionHeading("Report Information");
+
+    labelValue("Page under review", requestedUrl);
+
+    labelValue(
+      "Generated on",
+      new Date().toLocaleString()
+    );
+
+    labelValue(
+      "Scan status",
       mode === "sample"
         ? "Illustrative sample - not a live scan"
         : "URL captured - live scan not connected"
     );
 
-    y += 5;
+    divider();
 
-    // Summary section
-    addHeading("Audit Summary");
+    // ------------------------------------------
+    // AUDIT OVERVIEW
+    // ------------------------------------------
 
-    addText("Images Reviewed", findings.length);
-    addText(
-      "Potential Issues",
-      findings.filter(item => item.status === "issue").length
-    );
-    addText(
-      "Awaiting Decision",
-      findings.filter(item => !item.decision).length
-    );
-    addText(
-      "Reviewed by User",
-      findings.filter(item => item.decision).length
-    );
+    sectionHeading("Audit Overview");
 
-    y += 6;
+    const metrics = [
+      {
+        number: findings.length,
+        label: "Images reviewed"
+      },
+      {
+        number: findings.filter(
+          item => item.status === "issue"
+        ).length,
+        label: "Potential issues"
+      },
+      {
+        number: findings.filter(
+          item => !item.decision
+        ).length,
+        label: "Awaiting review"
+      }
+    ];
 
-    // Individual findings
-    addHeading("Detailed Findings");
+    const cardGap = 4;
+    const cardWidth =
+      (contentWidth - cardGap * 2) / 3;
 
-    findings.forEach((item, index) => {
-      checkPage(30);
+    checkSpace(35);
 
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(13);
-      pdf.setTextColor(22, 56, 95);
+    metrics.forEach((metric, index) => {
+      const x =
+        margin + index * (cardWidth + cardGap);
 
-      const titleLines = pdf.splitTextToSize(
-        `${index + 1}. ${item.title}`,
-        contentWidth
+      pdf.setFillColor(...light);
+      pdf.roundedRect(
+        x, y, cardWidth, 29, 2, 2, "F"
       );
 
-      for (const line of titleLines) {
-        checkPage(8);
-        pdf.text(line, margin, y);
-        y += 7;
-      }
-
-      y += 5;
-
-      addText("Image Type", item.type);
-      addText("Finding Status", item.statusLabel);
-      addText("Alt Text State", item.altState);
-      addText("Current Alt Text", item.original);
-      addText("Identified Issue", item.summary);
-      addText("Evidence and Rationale", item.evidence);
-      addText("Suggested Action", item.suggestion);
-      addText("Confidence", item.confidence);
-      addText("Review Decision", item.decision || "Awaiting review");
-
-      y += 5;
-
-      checkPage(8);
-
-      pdf.setDrawColor(220, 220, 220);
-      pdf.line(margin, y, pageWidth - margin, y);
-      y += 12;
-    });
-
-    // Disclaimer
-    addHeading("Important Disclaimer");
-
-    addText(
-      "This report contains illustrative frontend data only. " +
-      "It does not represent a completed live website scan. " +
-      "The findings and suggestions may be inaccurate and require " +
-      "human verification. AltAware Lens does not certify " +
-      "accessibility or legal compliance."
-    );
-
-    // Page numbers
-    const totalPages = pdf.internal.getNumberOfPages();
-
-    for (let i = 1; i <= totalPages; i++) {
-      pdf.setPage(i);
-      pdf.setFont("helvetica", "normal");
-      pdf.setFontSize(9);
-      pdf.setTextColor(130, 130, 130);
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(19);
+      setColor(navy);
 
       pdf.text(
-        `Page ${i} of ${totalPages}`,
-        pageWidth - margin,
-        pageHeight - 10,
+        String(metric.number).padStart(2, "0"),
+        x + 6,
+        y + 13
+      );
+
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(8);
+      setColor(muted);
+
+      pdf.text(
+        metric.label,
+        x + 6,
+        y + 22
+      );
+    });
+
+    y += 39;
+
+    // ------------------------------------------
+    // DETAILED FINDINGS
+    // ------------------------------------------
+
+    sectionHeading("Detailed Findings");
+
+    writeText(
+      "Review the following findings against the actual image and surrounding page context before making changes.",
+      {
+        size: 9,
+        color: muted,
+        gap: 8
+      }
+    );
+
+    findings.forEach((item, index) => {
+
+      // Start each finding on a new page if
+      // there is insufficient room for its title
+      // and first content section.
+      checkSpace(45);
+
+      const cardX = margin;
+      const cardWidth = contentWidth;
+
+      // Finding heading background
+      pdf.setFillColor(...light);
+      pdf.roundedRect(
+        cardX,
+        y - 5,
+        cardWidth,
+        13,
+        2,
+        2,
+        "F"
+      );
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(10);
+      setColor(navy);
+
+      const heading = `${String(index + 1).padStart(2, "0")} - ${item.title}`;
+
+      const headingLines = wrappedLines(
+        heading,
+        cardWidth - 12,
+        10
+      );
+
+      // Increase heading height if title wraps
+      if (headingLines.length > 1) {
+        pdf.setFillColor(...light);
+        pdf.roundedRect(
+          cardX,
+          y - 5,
+          cardWidth,
+          13 + (headingLines.length - 1) * 5,
+          2,
+          2,
+          "F"
+        );
+      }
+
+      headingLines.forEach((line, i) => {
+        pdf.text(line, cardX + 6, y + i * 5);
+      });
+
+      y += 15 + (headingLines.length - 1) * 5;
+
+      // Finding metadata
+      writeText(
+        `${item.type} | ${item.statusLabel} | ${item.altState}`,
+        {
+          size: 9,
+          color: muted,
+          gap: 7
+        }
+      );
+
+      // Current alt text
+      labelValue(
+        "Current alt text / state",
+        item.original
+      );
+
+      // Identified concern
+      labelValue(
+        "Identified concern",
+        item.summary
+      );
+
+      // Evidence
+      labelValue(
+        "Evidence and rationale",
+        item.evidence
+      );
+
+      // Suggested improvement
+      checkSpace(20);
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(8);
+      setColor(muted);
+
+      pdf.text(
+        "SUGGESTED IMPROVEMENT",
+        margin,
+        y
+      );
+
+      y += 5;
+
+      const suggestionLines = wrappedLines(
+        item.suggestion,
+        contentWidth - 12,
+        9.5
+      );
+
+      const suggestionHeight =
+        suggestionLines.length * 5.5 + 9;
+
+      // Draw suggested improvement in a
+      // light-blue box, splitting at page
+      // boundaries when necessary.
+      let lineIndex = 0;
+
+      while (lineIndex < suggestionLines.length) {
+        checkSpace(12);
+
+        const availableHeight =
+          bottomLimit - y;
+
+        const maxLines = Math.max(
+          1,
+          Math.floor((availableHeight - 9) / 5.5)
+        );
+
+        const chunk = suggestionLines.slice(
+          lineIndex,
+          lineIndex + maxLines
+        );
+
+        const boxHeight =
+          chunk.length * 5.5 + 9;
+
+        pdf.setFillColor(238, 245, 252);
+        pdf.setDrawColor(218, 231, 245);
+
+        pdf.roundedRect(
+          margin,
+          y,
+          contentWidth,
+          boxHeight,
+          2,
+          2,
+          "FD"
+        );
+
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(9.5);
+        setColor(navy);
+
+        chunk.forEach((line, i) => {
+          pdf.text(
+            line,
+            margin + 6,
+            y + 7 + i * 5.5
+          );
+        });
+
+        y += boxHeight + 4;
+        lineIndex += chunk.length;
+
+        if (lineIndex < suggestionLines.length) {
+          newPage();
+        }
+      }
+
+      // Review information
+      y += 4;
+
+      labelValue(
+        "Confidence",
+        item.confidence
+      );
+
+      labelValue(
+        "Review decision",
+        item.decision || "Awaiting review"
+      );
+
+      y += 3;
+      divider();
+    });
+
+    // ------------------------------------------
+    // DISCLAIMER
+    // ------------------------------------------
+
+    checkSpace(40);
+
+    sectionHeading("Important Disclaimer");
+
+    writeText(
+      "AltAware Lens provides AI-assisted decision support, " +
+      "not a compliance certification. Findings and suggested " +
+      "text may be inaccurate and must be verified against " +
+      "the actual image, surrounding content, and intended " +
+      "function. This report uses illustrative frontend " +
+      "data and does not represent a completed live scan.",
+      {
+        size: 9,
+        color: muted,
+        lineHeight: 5,
+        gap: 8
+      }
+    );
+
+    // ------------------------------------------
+    // FOOTER ON EVERY PAGE
+    // ------------------------------------------
+
+    const totalPages =
+      pdf.internal.getNumberOfPages();
+
+    for (let page = 1; page <= totalPages; page++) {
+
+      pdf.setPage(page);
+
+      pdf.setDrawColor(...border);
+      pdf.line(
+        margin,
+        H - 18,
+        W - margin,
+        H - 18
+      );
+
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(8);
+      setColor(muted);
+
+      pdf.text(
+        "AltAware Lens | AI-assisted accessibility review",
+        margin,
+        H - 12
+      );
+
+      pdf.text(
+        `Page ${page} of ${totalPages}`,
+        W - margin,
+        H - 12,
         { align: "right" }
       );
     }
 
-    // Download PDF
+    // ------------------------------------------
+    // DOWNLOAD
+    // ------------------------------------------
+
     pdf.save("AltAware-Lens-Audit-Report.pdf");
 
-    toast("Audit report exported as PDF.");
+    toast("Audit report exported successfully.");
+
   });
+
+  
 
   // Display page information
   byId("pageDomain").textContent = pageHost;
