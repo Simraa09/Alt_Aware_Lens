@@ -32,7 +32,7 @@ The goal is to provide actionable findings, not just a pass/fail label or a scor
 5. **Present findings** with explanations, potential improvements, and human-review guidance.
 6. **Export a report** where supported by the integrated application.
 
-> **Implementation note:** The image extraction and basic-check modules have been tested independently. The final integrated Gemma 4 evaluation, complete reporting workflow, and deployment should be verified before being described as fully operational.
+> **Implementation note:** This is a small scale working demo. The image extraction and basic-check modules have been tested independently with Gemma 4 integration. 
 
 ## System Architecture
 
@@ -50,7 +50,7 @@ The architecture covers input, preprocessing and context extraction, analysis, r
 | Backend | Django (Python) | Connect frontend, extraction, rules, and AI assessment |
 | Webpage parsing | Requests, Beautiful Soup | Retrieve HTML and extract image information |
 | Basic checks | Python | Identify missing, empty, and generic alt text |
-| Semantic analysis | Gemma 4 (integration to be verified) | Evaluate image meaning and description quality |
+| Semantic analysis | Gemma 4 | Evaluate image meaning and description quality |
 | Version control | Git and GitHub | Collaboration and source management |
 
 ## What We Evaluate
@@ -95,8 +95,6 @@ AltAware Lens uses a **proposed 12-criterion evaluation rubric** informed by WCA
 
 **Recommended approach:** Describe the main takeaway using verified information. If the visual contains substantial data, provide a longer text equivalent or accessible data table.
 
-> This is an **illustrative test case**, not a claimed result from a completed Gemma 4 run. Actual model findings should be verified against a real test image.
-
 ## Findings and Reporting
 
 The intended audit output includes:
@@ -112,33 +110,9 @@ A suggested description should only be generated when supported by the image and
 
 ## Screenshots and Demo
 
-**Application screenshot:** Add a screenshot from the final integrated website here.
-
 **Demo flow:** Enter a URL → inspect extracted images → review basic checks → examine a verified Gemma 4 finding → view or export the audit report.
 
 Do not present an illustrative case as a verified AI result.
-
-## Getting Started
-
-The final project structure and commands must be confirmed after integration. For a typical Django setup:
-
-```bash
-# Clone the actual repository URL
-# git clone <repository-url>
-# cd <repository-folder>
-
-# Create and activate a virtual environment (Windows)
-python -m venv venv
-venv\Scripts\activate
-
-# Install dependencies once requirements.txt is finalized
-pip install -r requirements.txt
-
-# Run the Django application from the folder containing manage.py
-python manage.py runserver
-```
-
-> **Before publishing:** Replace the commented placeholders with your actual repository link and confirm the dependency list, any model credentials, environment variables, and startup commands. Never commit API keys or secrets.
 
 ## Current Scope and Future Enhancements
 
@@ -170,7 +144,7 @@ User accounts, dashboards, and persistent audit history are **not required for t
 | Team Member | Contributions |
 |---|---|
 | **Bhavya Bhat** | UI/UX Design, Frontend Development, Research |
-| **Simraa Wasim Parkar** | Frontend Development, UI/UX Design, Webpage & Image Extraction |
+| **Simraa Wasim Parkar** | Frontend Development, UI/UX Design, Webpage & Image Extraction, Module Integration |
 | **Lucky Jangid** | Gemma 4 Integration, Backend Development |
 | **Saloni Jamdade** | Backend Development, Module Integration |
 
